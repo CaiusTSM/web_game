@@ -15,6 +15,9 @@
     </style>
   </head>
   <body>
+	<div style="width:100%;height:300px">
+		<p id="game_state"></p>
+	</div>
     <ul id="messages"></ul>
     <form action="">
       <input id="m" autocomplete="off" /><button>Send</button>
@@ -33,6 +36,9 @@
           $('#messages').append($('<li>').text(msg));
           window.scrollTo(0, document.body.scrollHeight);
         });
+		socket.on('game state', function(msg){
+			$("#game_state").html(msg);
+		});
       });
     </script>
   </body>
