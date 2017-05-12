@@ -3,6 +3,9 @@ class Player:
 		self.uid = uid
 		self.username = username
 		
+	def __json_serializable__(self):
+		return self.__dict__
+		
 	def get_uid(self):
 		return self.uid
 		

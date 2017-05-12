@@ -60,7 +60,7 @@ class GameServer:
 				if tick_count == self.max_tick_count:
 					self.time_passed = 0
 			if self.sample_timer >= self.sample_time:
-				self.socketio.emit('game state', '__game state__ --- ' + str(current_time()))
+				self.socketio.emit('game state', json.dumps(self.game.get_game_state(), cls = GameJSONEncoder))
 				self.sample_timer = 0
 			if tick_count > 1:
 				print("WARNING: Game is running slow.")
@@ -75,17 +75,27 @@ class GameServer:
 		else:
 			self.game.tick(self.time_step)
 	
-	def spawn_player(self, username):
+	def add_player(self, username):
 		player_uid = ""
 		if self.threaded == True:
 			self.lock_game.acquire()
 			try:
-				player_uid = self.game.spawn_player(username)
+				player_uid = self.game.add_player(username)
 			finally:
 				self.lock_game.release()
 		else:
-			player_uid = self.game.spawn(username)
+			player_uid = self.game.add_player(username)
 		return player_uid
+	
+	def remove_player(self, uid):
+		if self.threaded == True:
+			self.lock_game.acquire()
+			try:
+				self.game.remove_player(uid)
+			finally:
+				self.lock_game.release()
+		else:
+			self.game.remove_player(uid)
 			
 	def set_player_name(self, uid, username):
 		if self.threaded == True:
@@ -99,6 +109,3 @@ class GameServer:
 			
 	def get_player_name(self, uid):
 		return self.game.get_player_name(uid)
-		
-	def get_game_state(self):
-		return self.game.get_game_state()

@@ -1,16 +1,22 @@
 import uuid
+import json
 
 from player import *
+
+class GameJSONEncoder(json.JSONEncoder):
+	def default(self, obj):
+		return obj.__dict__
+	
+		#return json.JSONEncoder.default(self, obj)
 
 class Game:
 	def __init__(self):
 		self.players = []
-		self.blah = 0
 		
 	def tick(self, time_step):
-		self.blah += 1
+		pass
 		
-	def spawn_player(self, username):
+	def add_player(self, username):
 		new_player = Player(str(uuid.uuid4()), username)
 		self.players.append(new_player)
 		return new_player.get_uid()
